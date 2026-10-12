@@ -1,43 +1,31 @@
 #!/usr/bin/env bash
+#
+# Animated Diwali flowerpot (anar) greeting.
 
-user="vss"
+NAME="vss"
 
-color_array=(
+COLORS=(
     "$(tput setaf 160)"
     "$(tput setaf 209)"
-    "$(tput setaf  11)"
-    "$(tput setaf  34)"
-    "$(tput setaf  33)"
+    "$(tput setaf 11)"
+    "$(tput setaf 34)"
+    "$(tput setaf 33)"
 )
 
-sparkle_array=(
-    "*"
-    "+"
-    "x"
-    "."
-)
+SPARKLES=("*" "+" "x" ".")
 
-mesg=(
-    "Happy Diwali from $user!"
+MESSAGE=(
+    "Happy Diwali from $NAME!"
     "May this Diwali bring light"
     "and joy into your life!"
 )
 
-FLOWER_POT_YELLOW=$(tput setaf 226)
+POT_COLOR=$(tput setaf 226)
 MESG_COLOR=$(tput setaf 15)
-RESET=$(tput sgr0)
 
-cleanup () {
-    tput rmcup
-    tput cnorm
-}
-
-trap cleanup exit
-
-tput smcup
-tput civis
-
-IFS= read -r -d '' FLOWER_POT <<- "EOF"
+# Digits 0-4 are sparkle placeholders. A digit is only replaced when it has a
+# space on both sides, so the trailing spaces on some lines are intentional.
+IFS= read -r -d '' FLOWER_POT <<- 'EOF'
              4 --- 2   3   2 --- 4 
       1     /       \  |  /       \     4 
            1         1 | 1         1 
@@ -60,38 +48,42 @@ EOF
 OBJ_HEIGHT=18
 OBJ_WIDTH=42
 
-idx=0
-color_array_len=${#color_array[@]}
-sparkle_array_len=${#sparkle_array[@]}
-cols=$(tput cols)
-lines=$(tput lines)
+num_colors=${#COLORS[@]}
+num_sparkles=${#SPARKLES[@]}
 
-middle_y=$(((lines / 2) - (OBJ_HEIGHT / 2)))
+top=$(( $(tput lines) / 2 - OBJ_HEIGHT / 2 ))
+mesg_top=$((top + 9))
+mesg_left=$((OBJ_WIDTH + 5))
+
+cleanup() {
+    tput rmcup
+    tput cnorm
+}
+trap cleanup EXIT
+
+tput smcup
+tput civis
 
 while true; do
-    flowerpot=$FLOWER_POT
-
-    color_index=$RANDOM
-    sparkle_index=$RANDOM
+    frame=$FLOWER_POT
+    color_offset=$RANDOM
+    sparkle_offset=$RANDOM
 
     for n in {0..4}; do
-        color="${color_array[(color_index + n) % color_array_len]}"
-        sparkle="${sparkle_array[(sparkle_index + n) % sparkle_array_len]}"
-
-        flowerpot=${flowerpot// $n / $color$sparkle$FLOWER_POT_YELLOW }
+        color=${COLORS[(color_offset + n) % num_colors]}
+        sparkle=${SPARKLES[(sparkle_offset + n) % num_sparkles]}
+        frame=${frame// $n / $color$sparkle$POT_COLOR }
     done
-    
-    tput cup $middle_y 0
-    printf '%s\n' "$flowerpot"
 
-    mesg_y=$((middle_y + 9))
-    mesg_x=$((OBJ_WIDTH + 5))
-    for line in "${mesg[@]}"; do
-        tput cup "$mesg_y" "$mesg_x"
-        echo "$MESG_COLOR$line$FLOWER_POT_YELLOW"
-        ((mesg_y++))
+    tput cup "$top" 0
+    printf '%s\n' "$frame"
+
+    y=$mesg_top
+    for line in "${MESSAGE[@]}"; do
+        tput cup "$y" "$mesg_left"
+        printf '%s\n' "$MESG_COLOR$line$POT_COLOR"
+        ((y++))
     done
+
     sleep 1
 done
-
-exit 0
