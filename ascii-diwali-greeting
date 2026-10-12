@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Animated Diwali flowerpot (anar) greeting.
+# Animated Diwali flowerpot (chicchu buddi) greeting.
 
 NAME="vss"
 
@@ -25,6 +25,7 @@ MESG_COLOR=$(tput setaf 15)
 
 # Digits 0-4 are sparkle placeholders. A digit is only replaced when it has a
 # space on both sides, so the trailing spaces on some lines are intentional.
+
 IFS= read -r -d '' FLOWER_POT <<- 'EOF'
              4 --- 2   3   2 --- 4 
       1     /       \  |  /       \     4 
