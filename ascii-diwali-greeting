@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 #
 # Animated Diwali flowerpot (chicchu buddi) greeting.
+# Released under the ISC license.
+#
+# Credit to Dave Eddy for the inspiration: https://youtu.be/NENq-G2PsTo
 
 NAME="V Sai Sasank"
 
