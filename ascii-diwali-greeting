@@ -2,7 +2,7 @@
 #
 # Animated Diwali flowerpot (chicchu buddi) greeting.
 
-NAME="vss"
+NAME="V Sai Sasank"
 
 COLORS=(
     "$(tput setaf 160)"
